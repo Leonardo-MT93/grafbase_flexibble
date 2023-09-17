@@ -13,7 +13,7 @@ const User = g.model('User', {
 const Project = g.model('Project', {
   title: g.string().length({min:3}),
   description: g.string(),
-  iamge: g.url(),
+  image: g.url(),
   liveSiteUrl: g.url().optional(),
   githubUrl: g.url().optional(),
   category: g.string().search(),
