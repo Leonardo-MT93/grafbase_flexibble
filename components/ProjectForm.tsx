@@ -6,6 +6,8 @@ import FormField from "./FormField";
 import { categoryFilters } from "@/constants";
 import CustomMenu from "./CustomMenu";
 import Button from "./Button";
+import { createNewProject, fetchToken } from "@/lib/actions";
+import {useRouter} from 'next/navigation'
 
 type Props = {
   type: string;
@@ -13,7 +15,33 @@ type Props = {
 };
 
 const ProjectForm = ({ type, session }: Props) => {
-  const handleFormSubmit = (e: React.FormEvent) => {};
+  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [form, setForm] = useState({
+    image: "",
+    title: "",
+    description: "",
+    liveSiteUrl: "",
+    githubUrl: "",
+    category: "",
+  });
+  const handleFormSubmit = async(e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const {token} = await fetchToken()
+
+    try {
+      if(type === 'create'){
+        await createNewProject(form, session?.user?.id, token);
+        router.push('/')
+      }
+    } catch (error) {
+      alert(error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  };
 
 
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,15 +65,7 @@ const ProjectForm = ({ type, session }: Props) => {
   const handleStateChange = (fieldName: string, value: string) => {
     setForm((prevState) => ({ ...prevState, [fieldName]: value }));
   };
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [form, setForm] = useState({
-    image: "",
-    title: "",
-    description: "",
-    liveSiteUrl: "",
-    githubUrl: "",
-    category: "",
-  });
+  
   return (
     <form onSubmit={handleFormSubmit} className="flexStart form">
       <div className="flexStart form_image-container">

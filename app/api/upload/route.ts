@@ -7,6 +7,7 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_KEY, 
   api_secret: process.env.CLOUDINARY_SECRET
 })
+
  export async function POST(request: Request){
     const {path} = await request.json()
     if(!path) {
@@ -23,6 +24,7 @@ cloudinary.config({
         const result = await cloudinary.uploader.upload(path, options)
         return NextResponse.json(result, {status: 200})
     } catch (error) {
+        console.log(error)
         return NextResponse.json({message: error}, {status: 500})
 
     }
